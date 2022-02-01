@@ -1,0 +1,34 @@
+.top-pane {
+  background: hsl(225, 6%, 25%);
+}
+
+.pane {
+  height: 100%;
+  display: flex;
+}
+
+.bottom-pane {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  position: absolute;
+  background-color: #fff;
+  z-index: 10;
+  bottom: 0;
+}
+
+.resizer {
+  width: 100%;
+  height: 18px;
+  background-color: hsl(225, 6%, 13%);
+  cursor: row-resize;
+  position: fixed;
+}
+
+.editor-drag-cover {
+  width: 100%;
+  height: 100%;
+  z-index: 10;
+  position: fixed;
+  bottom: 0px;
+}
