@@ -3,6 +3,16 @@ import { Controlled as ControlledEditor } from 'react-codemirror2';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faExpandAlt } from '@fortawesome/free-solid-svg-icons';
 
+import 'codemirror/addon/hint/show-hint';
+import 'codemirror/addon/hint/show-hint.css';
+import 'codemirror/addon/hint/css-hint';
+import 'codemirror/addon/hint/html-hint';
+import 'codemirror/addon/hint/xml-hint';
+import 'codemirror/addon/hint/javascript-hint';
+import 'codemirror/addon/edit/closebrackets';
+import 'codemirror/addon/edit/closetag';
+import 'codemirror/addon/edit/matchbrackets';
+import 'codemirror/addon/lint/lint';
 import 'codemirror/lib/codemirror.css';
 import 'codemirror/theme/material.css';
 import 'codemirror/mode/xml/xml';
@@ -10,6 +20,7 @@ import 'codemirror/mode/javascript/javascript';
 import 'codemirror/mode/css/css';
 
 import './style.css';
+import CodeMirror from 'codemirror';
 
 type EditorProps = {
   displayName: string;
@@ -43,6 +54,19 @@ function Editor({ displayName, language, value, onChange }: EditorProps) {
     onChange(currentValue);
   }
 
+  function isValidKey(keyCode: number) {
+    const input = String.fromCharCode(keyCode);
+    const regex = /[a-zA-Z0-9-_ ]/;
+
+    return regex.test(input);
+  }
+
+  const handleKeydown = (editor: CodeMirror.Editor, event: KeyboardEvent) => {
+    if (!editor.state.completionActive && isValidKey(event.keyCode)) {
+      editor.showHint({ completeSingle: false });
+    }
+  };
+
   return (
     <div className={`editor-container ${open ? '' : 'collapsed'}`}>
       <div className={`editor-title ${open ? '' : 'collapsed'}`} ref={titleRef}>
@@ -64,9 +88,15 @@ function Editor({ displayName, language, value, onChange }: EditorProps) {
         options={{
           lineWrapping: true,
           mode: language,
+          extraKeys: { 'Ctrl-Space': 'autocomplete' },
+          matchBrackets: true,
+          autoCloseBrackets: true,
+          autoCloseTags: true,
+          lint: true,
           theme: 'material',
           lineNumbers: true,
         }}
+        onKeyDown={handleKeydown}
       />
     </div>
   );
