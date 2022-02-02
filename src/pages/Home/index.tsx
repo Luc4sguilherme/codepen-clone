@@ -34,9 +34,31 @@ function Home() {
     }
   }
 
+  function onTouchmove(e: TouchEvent) {
+    e.preventDefault();
+
+    const ressize = resizerRef.current;
+
+    if (ressize) {
+      const { clientY } = e.touches[0];
+
+      if (
+        clientY > window.innerHeight - ressize.offsetHeight ||
+        clientY < 200
+      ) {
+        return;
+      }
+
+      setPaneBottomHeight(`${window.innerHeight - clientY}px`);
+    }
+  }
+
   function onMouseUp() {
     document.body.removeEventListener('mousemove', onMouseMove);
+    document.body.removeEventListener('touchmove', onTouchmove);
+
     document.body.removeEventListener('mouseup', onMouseUp);
+    document.body.removeEventListener('touchend', onMouseUp);
 
     setPaneBottomDisplay('flex');
     setEditorDragCoverDisplay('none');
@@ -44,7 +66,12 @@ function Home() {
 
   function onMouseDown() {
     document.body.addEventListener('mousemove', onMouseMove);
+    document.body.addEventListener('touchmove', onTouchmove);
+
     document.body.addEventListener('mouseup', onMouseUp);
+    document.body.addEventListener('touchend', onMouseUp);
+
+    document.body.addEventListener('touchcancel', onMouseUp);
     document.body.addEventListener('mouseleave', onMouseUp);
 
     setPaneBottomDisplay('block');
@@ -71,12 +98,14 @@ function Home() {
     if (paneBottomRef.current) {
       if (resizerRef.current) {
         resizerRef.current.addEventListener('mousedown', onMouseDown);
+        resizerRef.current.addEventListener('touchstart', onMouseDown);
       }
     }
 
     return () => {
       if (resizerRef.current) {
         resizerRef.current.removeEventListener('mousedown', onMouseDown);
+        resizerRef.current.removeEventListener('touchstart', onMouseDown);
       }
     };
   }, []);
