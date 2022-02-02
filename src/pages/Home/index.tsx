@@ -18,6 +18,8 @@ function Home() {
   const editorDragCoverRef = useRef<HTMLDivElement>(null);
 
   function onMouseMove(e: MouseEvent) {
+    e.preventDefault();
+
     const ressize = resizerRef.current;
 
     if (ressize) {
