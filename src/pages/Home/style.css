@@ -1,5 +1,6 @@
 .top-pane {
   background: hsl(225, 6%, 25%);
+  height: calc(100% - 18px) !important;
 }
 
 .pane {
